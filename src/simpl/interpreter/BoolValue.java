@@ -14,7 +14,11 @@ public class BoolValue extends Value {
 
     @Override
     public boolean equals(Object other) {
-        // TODO
+        // 用于判断一个类型是否为Bool，若是，返回b是否等于这个object的值，否则返回false
+        // 不仅判断是否是类型是否是Bool，还判断值是否相等
+        if(other instanceof BoolValue){
+            return b==((BoolValue)other).b;
+        }
         return false;
     }
 }

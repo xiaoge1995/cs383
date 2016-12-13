@@ -21,7 +21,10 @@ public class FunValue extends Value {
 
     @Override
     public boolean equals(Object other) {
-        // TODO
+        // 判断类型是否为FunValue
+        if(other instanceof FunValue){
+            return true;
+        }
         return false;
     }
 }

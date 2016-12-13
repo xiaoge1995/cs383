@@ -1,6 +1,7 @@
 package simpl.parser.ast;
 
 import simpl.interpreter.BoolValue;
+import simpl.interpreter.IntValue;
 import simpl.interpreter.RuntimeError;
 import simpl.interpreter.State;
 import simpl.interpreter.Value;
@@ -17,7 +18,12 @@ public class Neq extends EqExpr {
 
     @Override
     public Value eval(State s) throws RuntimeError {
-        // TODO
-        return null;
+        // 检查两数是否为整数，返回l<>r
+        Value v1 = l.eval(s);
+        Value v2 = r.eval(s);
+        if(!(v1 instanceof IntValue && v2 instanceof IntValue)){
+            throw new RuntimeError("must be 2 int values");
+        }
+        return new BoolValue(!(v1.equals(v2)));
     }
 }

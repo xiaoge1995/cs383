@@ -15,7 +15,11 @@ public class PairValue extends Value {
 
     @Override
     public boolean equals(Object other) {
-        // TODO
+        // 判断类型是否为Pair，还判断前部分和后部分是否都相等
+        if(other instanceof PairValue){
+            return v1.equals(((PairValue)other).v1) && v2.equals(((PairValue)other).v2);
+            
+        }
         return false;
     }
 }

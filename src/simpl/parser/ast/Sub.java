@@ -17,7 +17,12 @@ public class Sub extends ArithExpr {
 
     @Override
     public Value eval(State s) throws RuntimeError {
-        // TODO
-        return null;
+        // 检查两数是否为整数，返回l-r
+        Value v1 = l.eval(s);
+        Value v2 = r.eval(s);
+        if(!(v1 instanceof IntValue && v2 instanceof IntValue)){
+            throw new RuntimeError("must be 2 int values");
+        }
+        return new IntValue(((IntValue)v1).n - ((IntValue)v2).n);
     }
 }
