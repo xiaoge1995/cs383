@@ -7,11 +7,19 @@ public class TypeVar extends Type {
     private static int tvcnt = 0;
 
     private boolean equalityType;
-    private Symbol name;
+
+    //originally was private
+    public Symbol name;
+
+    //modify
+    private int id;
 
     public TypeVar(boolean equalityType) {
         this.equalityType = equalityType;
+        id = tvcnt;
         name = Symbol.symbol("tv" + ++tvcnt);
+
+        //System.out.println("new TypeVar "+(char)('a'+id));
     }
 
     @Override
@@ -21,23 +29,25 @@ public class TypeVar extends Type {
 
     @Override
     public Substitution unify(Type t) throws TypeCircularityError {
-        // TODO
-        return null;
+        if(t.contains(this)){
+            throw new TypeCircularityError();
+        }
+        return Substitution.of(this,t);
     }
 
     public String toString() {
-        return "" + name;
+        //return (char)('a'+id)+"";
+        return name.toString();
     }
 
     @Override
     public boolean contains(TypeVar tv) {
-        // TODO
-        return false;
+        return name.equals(tv.name);
     }
 
     @Override
     public Type replace(TypeVar a, Type t) {
-        // TODO
-        return null;
+        if(name.equals(a.name)) return t;
+        else return this;
     }
 }

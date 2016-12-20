@@ -1,5 +1,6 @@
 package simpl.parser.ast;
 
+import simpl.Logger;
 import simpl.interpreter.Env;
 import simpl.interpreter.RecValue;
 import simpl.interpreter.RuntimeError;
@@ -29,13 +30,30 @@ public class Rec extends Expr {
 
     @Override
     public TypeResult typecheck(TypeEnv E) throws TypeError {
-        // TODO
-        return null;
+        Logger.i("----------type check in Rec");
+
+        TypeVar a = new TypeVar(false);
+        TypeResult tr = e.typecheck(TypeEnv.of(E,x,a));
+        Logger.i("e:" + tr.t);
+
+        Type t1 = a;
+        Type t2 = tr.t;
+
+        Substitution substitution = tr.s;
+
+        t1 = substitution.apply(t1);
+        t2 = substitution.apply(t2);
+
+        substitution = t1.unify(t2).compose(substitution);
+
+        Type resultType = substitution.apply(t1);
+
+        Logger.i("----------end check in Rec");
+        return TypeResult.of(substitution,resultType);
     }
 
     @Override
     public Value eval(State s) throws RuntimeError {
-        // TODO
-        return null;
+        return e.eval(State.of(new Env(s.E,x,new RecValue(s.E,x,e)), s.M, s.p));
     }
 }

@@ -1,0 +1,14 @@
+let a = ref 1 in 
+	let b = ref 2 in
+		let c = ref 3 in
+	 		let c = a in
+	 			let a = b in
+	 		 		!a::!b::!c::nil
+	 		 	end
+	 		end
+		end
+	end
+end
+
+
+

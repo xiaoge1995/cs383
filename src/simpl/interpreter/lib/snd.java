@@ -15,7 +15,19 @@ import simpl.typing.TypeResult;
 public class snd extends FunValue {
 
     public snd() {
-        // TODO
-        super(null, null, null);
+        super(Env.empty,Symbol.symbol("x"),new Expr(){
+            
+            @Override
+            public TypeResult typecheck(TypeEnv E) throws TypeError{
+                return null;
+            }
+            
+            @Override
+            public Value eval(State s) throws RuntimeError{
+                PairValue pv = (PairValue)(s.E.get(Symbol.symbol("x")));
+                return pv.v2;
+            }
+        });
     }
+    
 }

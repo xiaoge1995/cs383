@@ -31,12 +31,23 @@ public class Env {
     }
 
     public Value get(Symbol y) {
-        // TODO
-        return null;
+        // if y==x, return v, else find the value in E
+        if(y.toString().equals(x.toString())){
+            return v;
+        }
+        
+        return E.get(y);
     }
 
     public Env clone() {
-        // TODO
-        return null;
+        return new Env(E,x,v);
     }
+    
+    public String toString(){
+        String str = x.toString()+":"+v.toString()+"\n";
+        str += E.toString();
+        return str;
+    }
+    
+    
 }

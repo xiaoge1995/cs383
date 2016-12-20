@@ -1,13 +1,12 @@
 package simpl.parser.ast;
 
+import simpl.Logger;
+import simpl.interpreter.Int;
 import simpl.interpreter.RefValue;
 import simpl.interpreter.RuntimeError;
 import simpl.interpreter.State;
 import simpl.interpreter.Value;
-import simpl.typing.RefType;
-import simpl.typing.TypeEnv;
-import simpl.typing.TypeError;
-import simpl.typing.TypeResult;
+import simpl.typing.*;
 
 public class Ref extends UnaryExpr {
 
@@ -21,13 +20,30 @@ public class Ref extends UnaryExpr {
 
     @Override
     public TypeResult typecheck(TypeEnv E) throws TypeError {
-        // TODO
-        return null;
+        Logger.i("----------type check in Ref");
+        TypeResult tr = e.typecheck(E);
+        Logger.i("e:" + tr.t);
+
+        Type t = tr.t;
+        Substitution substitution = tr.s;
+
+        t = substitution.apply(t);
+
+        TypeResult result = TypeResult.of(substitution,new RefType(t));
+
+        Logger.i("----------end check in Ref");
+        return result;
     }
 
     @Override
     public Value eval(State s) throws RuntimeError {
-        // TODO
-        return null;
+        int oldPointer = s.p.get();
+        s.p.set(oldPointer+1);
+        Value v = e.eval(s);
+        v.refCount += 1;
+        s.M.put(oldPointer, v);
+        Logger.i("filling memory["+oldPointer+"]");
+        Logger.i("memory["+oldPointer+"] = "+v);
+        return new RefValue(oldPointer);
     }
 }

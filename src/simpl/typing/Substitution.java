@@ -10,6 +10,11 @@ public abstract class Substitution {
         public Type apply(Type t) {
             return t;
         }
+
+        @Override
+        public String toString() {
+            return "";
+        }
     }
 
     private static final class Replace extends Substitution {
@@ -24,6 +29,11 @@ public abstract class Substitution {
         public Type apply(Type b) {
             return b.replace(a, t);
         }
+
+        @Override
+        public String toString() {
+            return "replace "+a+" with "+t+'\n';
+        }
     }
 
     private static final class Compose extends Substitution {
@@ -37,15 +47,21 @@ public abstract class Substitution {
         public Type apply(Type t) {
             return f.apply(g.apply(t));
         }
+
+        @Override
+        public String toString() {
+            return f.toString()+g.toString();
+        }
+
     }
 
     public static final Substitution IDENTITY = new Identity();
 
-    public static Substitution of(TypeVar a, Type t) {
+    public static Substitution of(TypeVar a, Type t) {//Substitution.of(a,t), replace a with t
         return new Replace(a, t);
     }
 
-    public Substitution compose(Substitution inner) {
+    public Substitution compose(Substitution inner) {//xx.compose(inner), xx.apply(inner.apply(t))
         return new Compose(this, inner);
     }
 
@@ -55,5 +71,10 @@ public abstract class Substitution {
                 return apply(E.get(x));
             }
         };
+    }
+
+    @Override
+    public String toString() {
+        return "";
     }
 }

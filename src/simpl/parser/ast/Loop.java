@@ -1,5 +1,6 @@
 package simpl.parser.ast;
 
+import simpl.Logger;
 import simpl.interpreter.BoolValue;
 import simpl.interpreter.RuntimeError;
 import simpl.interpreter.State;
@@ -25,13 +26,34 @@ public class Loop extends Expr {
 
     @Override
     public TypeResult typecheck(TypeEnv E) throws TypeError {
-        // TODO
-        return null;
+        Logger.i("----------type check in Loop");
+        TypeResult tr1 = e1.typecheck(E);
+        Logger.i(tr1.t);
+        TypeResult tr2 = e2.typecheck(E);
+        Logger.i(tr2.t);
+
+        Type t1 = tr1.t;
+
+        Substitution substitution = tr2.s.compose(tr1.s);
+
+        t1 = substitution.apply(t1);
+
+        substitution = t1.unify(Type.BOOL).compose(substitution);
+
+        TypeResult result = TypeResult.of(substitution,Type.UNIT);
+
+        Logger.i("----------end check in Loop");
+        return result;
     }
 
     @Override
     public Value eval(State s) throws RuntimeError {
-        // TODO
-        return null;
+        Value v1 = e1.eval(s);
+        if(!(v1 instanceof BoolValue))throw new RuntimeError("not a bool value");
+        if(((BoolValue)v1).b){
+            return new Seq(e2,this).eval(s);
+        }else{
+            return Value.UNIT;
+        }
     }
 }

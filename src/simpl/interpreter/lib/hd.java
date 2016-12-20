@@ -15,7 +15,21 @@ import simpl.typing.TypeResult;
 public class hd extends FunValue {
 
     public hd() {
-        // TODO
-        super(null, null, null);
+        super(Env.empty,Symbol.symbol("x"),new Expr(){
+            @Override
+            public TypeResult typecheck(TypeEnv E) throws TypeError{
+                return null;
+            }
+            
+            @Override
+            public Value eval(State s) throws RuntimeError{
+                Value v = s.E.get(Symbol.symbol("x"));
+                if(v==Value.NIL){
+                    throw new RuntimeError("apply hd on nil!");
+                }
+                ConsValue cv = (ConsValue)v;
+                return cv.v1;
+            }
+        });
     }
 }

@@ -1,5 +1,6 @@
 package simpl.parser.ast;
 
+import simpl.Logger;
 import simpl.interpreter.BoolValue;
 import simpl.interpreter.RuntimeError;
 import simpl.interpreter.State;
@@ -22,34 +23,33 @@ public class AndAlso extends BinaryExpr {
 
     @Override
     public TypeResult typecheck(TypeEnv E) throws TypeError {
-        // TODO
         TypeResult tr1 = l.typecheck(E);
         TypeResult tr2 = r.typecheck(E);
-        
+
         Type t1 = tr1.t;
         Type t2 = tr2.t;
+
         Substitution substitution = tr2.s.compose(tr1.s);
-        
+
         t1 = substitution.apply(t1);
         t2 = substitution.apply(t2);
-        
+
         substitution = t2.unify(Type.BOOL)
                 .compose(t1.unify(Type.BOOL))
                 .compose(substitution);
-        
+
         return TypeResult.of(substitution,Type.BOOL);
     }
 
     @Override
     public Value eval(State s) throws RuntimeError {
-        // 检查两表达式是否为bool，先检查左面表达式，若为真，返回右表达式，若为假，返回假
         Value lb = l.eval(s);
-        if(!(lb instanceof BoolValue)) throw new RuntimeError("not a bool value");
+        if(!(lb instanceof BoolValue))throw new RuntimeError("not a bool value");
         if(!(((BoolValue)lb).b)){
             return new BoolValue(false);
         }
         Value rb = r.eval(s);
-        if(!(rb instanceof BoolValue)) throw new RuntimeError("not a bool value");
+        if(!(rb instanceof BoolValue))throw new RuntimeError("not a bool value");
         return new BoolValue(((BoolValue)rb).b);
     }
 }
